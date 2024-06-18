@@ -1,0 +1,55 @@
+<div
+  class="modal fade"
+  id="newsletterModal"
+  tabindex="-1"
+  aria-labelledby="newsletterModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newsletterModalLabel">Benvenuto</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Iscriviti alla nostra newsletter per ricevere un 15% di sconto per il
+          tuo primo ordine.
+        </p>
+        <form #registrationForm="ngForm" (ngSubmit)="onSubmit()" class="gradient-form">
+          <div class="mb-3">
+            <label for="firstName" class="form-label">Nome</label>
+            <input type="text" placeholder="Inserisci il tuo nome" class="form-control" id="firstName" name="firstName" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Cognome</label>
+            <input type="text" placeholder="Inserisci il tuo cognome" class="form-control" id="lastName" name="lastName" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" placeholder="Inserisci la tua e-mail" class="form-control" id="email" name="email" ngModel required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+            <div *ngIf="registrationForm.controls['email']?.invalid && (registrationForm.controls['email']?.dirty || registrationForm.controls['email']?.touched)">
+              <div *ngIf="registrationForm.controls['email']?.errors?.['required']">
+                L'email è obbligatoria.
+              </div>
+              <div *ngIf="registrationForm.controls['email']?.errors?.['pattern']">
+                Inserisci un'email valida.
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" placeholder="Inserisci una password" class="form-control" id="password" name="password" ngModel required>
+          </div>
+          <button type="submit" class="btn btn-primary " [disabled]="registrationForm.invalid">Registrati</button>
+        </form>
+              
+      </div>
+    </div>
+  </div>
+</div>

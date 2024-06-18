@@ -1,0 +1,54 @@
+.form-label {
+  text-align: left;
+  display: block; 
+}
+
+/* Sfondo graduato per il form */
+.gradient-form {
+  background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Gradiente di colore chiaro */
+  padding: 20px;
+  border-radius: 8px; /* Angoli arrotondati */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiungi un'ombra leggera */
+}
+
+/* Sfondo graduato per il modal */
+.modal-content {
+  background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Gradiente di colore chiaro */
+  border-radius: 8px; /* Angoli arrotondati */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiungi un'ombra leggera */
+}
+
+/* Margine e padding per una migliore disposizione */
+.modal-body {
+  padding: 20px;
+}
+
+.modal-header {
+  background-color: #007bff; /* Colore di sfondo per l'intestazione del modal */
+  color: white; /* Colore del testo per l'intestazione del modal */
+  border-top-left-radius: 8px; /* Arrotonda gli angoli in alto a sinistra */
+  border-top-right-radius: 8px; /* Arrotonda gli angoli in alto a destra */
+}
+
+.btn-primary {
+  background-color: #007bff; /* Colore del pulsante */
+  border-color: #007bff;
+  transition: background-color 0.3s, border-color 0.3s; /* Transizione per l'effetto hover */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Colore del pulsante al passaggio del mouse */
+  border-color: #0056b3;
+}
+
+/* Stile personalizzato per i campi input */
+.form-control {
+  border-radius: 4px;
+  box-shadow: none;
+  transition: border-color 0.3s, box-shadow 0.3s; /* Transizione per l'effetto focus */
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}

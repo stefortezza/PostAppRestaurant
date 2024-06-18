@@ -1,0 +1,124 @@
+/* Stili per la modale */
+.modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.delivery-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delivery-methods button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white; /* Sfondo bianco */
+  color: black; /* Testo nero */
+  border: 1px solid #ccc; /* Bordo grigio */
+  border-radius: 5px; /* Angoli arrotondati */
+  padding: 10px; /* Aggiungi spazio interno al pulsante */
+  cursor: pointer; /* Cambia il cursore al passaggio del mouse */
+  font-weight: bold; /* Testo in grassetto */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra */
+}
+
+.delivery-methods button:hover {
+  background-color: #f2f2f2; /* Cambia il colore dello sfondo al passaggio del mouse */
+}
+
+.delivery-methods mat-icon {
+  font-size: 24px; /* Dimensione dell'icona */
+  margin-right: 8px; /* Aggiungi spazio tra l'icona e il testo */
+}
+
+/* Stili personalizzati per il pulsante "Continua" */
+.custom-primary-button {
+  background-color: red !important; /* Imposta il colore di sfondo rosso */
+  color: white !important; /* Imposta il colore del testo su bianco */
+}
+
+.form-section {
+  margin-top: 20px;
+}
+
+.form-section input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+/* Stile per la modale */
+.modal-header h3 {
+  font-weight: bold; /* Testo in grassetto */
+}
+
+/* Stile per gli input */
+.modal-body input[type="text"] {
+  background-color: #f2f2f2; /* Sfondo grigio chiaro */
+  color: #333; /* Testo grigio scuro */
+}
+
+/* Stili per il pulsante di localizzazione */
+.location-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: red; /* Sfondo rosso */
+  color: white; /* Testo bianco */
+  border: none; /* Rimuovi il bordo */
+  padding: 8px 16px; /* Aggiungi spazio interno al pulsante */
+  border-radius: 4px; /* Angoli arrotondati */
+  cursor: pointer; /* Cambia il cursore al passaggio del mouse */
+  margin: 0 auto; /* Centra il pulsante */
+}
+
+.location-button:hover {
+  background-color: darkred; /* Cambia il colore dello sfondo al passaggio del mouse */
+}
+
+.location-icon {
+  margin-right: 8px; /* Aggiungi spazio tra l'icona e il testo */
+}
+
+/* Stili per il logo */
+.logo-image {
+  width: 100px; /* Imposta la larghezza dell'immagine */
+  height: auto; /* Imposta l'altezza automaticamente per mantenere le proporzioni */
+  display: block; /* Imposta l'elemento come blocco */
+  margin-top: 30px;
+}
+
+/* Stili per il pulsante di chiusura */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: darkred;
+}

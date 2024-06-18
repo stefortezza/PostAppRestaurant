@@ -1,0 +1,20 @@
+<img [src]="category.image" [alt]="category.title" class="pizza-image" />
+<h2>{{ category.title }}</h2>
+<div class="vh-600">
+  <h3>Ingredienti:</h3>
+  <div *ngFor="let ingredient of category.ingredienti">
+    <label>
+      <input type="checkbox" [(ngModel)]="ingredient.selected" />
+      {{ ingredient.name }}
+    </label>
+  </div>
+
+  <h3>Condimenti opzionali:</h3>
+  <div *ngFor="let optionalIngredient of category.opzionali">
+    <input type="checkbox" [(ngModel)]="optionalIngredient.selected" (change)="onOptionalIngredientChange(optionalIngredient)">
+    {{optionalIngredient.name}} - Prezzo: €{{optionalIngredient.priceOpzionale}}.00
+  </div>
+  
+  <button mat-button (click)="addToOrder()">Aggiungi</button>
+  <button mat-button (click)="onNoClick()">Annulla</button>
+</div>

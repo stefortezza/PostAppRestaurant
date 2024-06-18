@@ -1,0 +1,60 @@
+<div class="checkout-container">
+  <div class="order-summary">
+    <h2>Riepilogo Ordine</h2>
+    <ul>
+      <li *ngFor="let item of order.items">
+        {{ item.name }} - {{ item.quantity }} x {{ item.price | currency }}
+      </li>
+    </ul>
+    <h3>Totale: {{ order.totalPrice | currency }}</h3>
+  </div>
+
+  <div class="order-options">
+    <h2>Ti consigliamo anche</h2>
+    <div class="carousel-placeholder"></div>
+
+    <h2>Note</h2>
+    <textarea
+      placeholder="Aggiungi una nota al tuo ordine"
+      [(ngModel)]="order.note"
+    ></textarea>
+
+    <h2>Metodo di Consegna</h2>
+    <p>{{ deliveryMethod }}</p>
+
+    <h2>Modalità di Pagamento</h2>
+    <button
+      class="payment-button"
+      (click)="selectPaymentMethod('Carta di Credito')"
+    >
+      Carta di Credito
+    </button>
+    <button class="payment-button" (click)="selectPaymentMethod('PayPal')">
+      PayPal
+    </button>
+    <button class="payment-button" (click)="selectPaymentMethod('Contanti')">
+      Contanti
+    </button>
+  </div>
+</div>
+<div class="container mt-5">
+  <h2>Stripe Checkout</h2>
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <button (click)="pay(20)" class="btn btn-primary btn-block">
+        Pay $20
+      </button>
+    </div>
+    <!-- <div class="col-md-4">
+        <button (click)="pay(30)" class="btn btn-success btn-block">Pay $30</button>
+      </div>
+      <div class="col-md-4">
+        <button (click)="pay(50)" class="btn btn-info btn-block">Pay $50</button>
+      </div>     -->
+  </div>
+  <p class="mt-5">
+    Try it out using the test card number <b>4242 4242 4242 4242</b>, a random
+    three-digit CVC number, any expiration date in the future, and a random
+    five-digit U.S. ZIP code.
+  </p>
+</div>
