@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AddToOrderModalComponent } from '../add-to-order-modal/add-to-order-modal.component';
 import { Antipasti } from 'src/interfaces/antipasti';
 import { Ingredient } from 'src/interfaces/ingredient';
 import { OptionalIngredient } from 'src/interfaces/antipasti';
 import { ConcludiOrdineModalComponent } from '../concludi-ordine-modal/concludi-ordine-modal.component';
-
+import { DataService } from 'src/app/service/data-service';
 
 interface OrderItem {
   quantity: number;
@@ -28,7 +27,6 @@ interface OrderItem {
   styleUrls: ['./antipasti.component.scss'],
 })
 export class AntipastiComponent implements OnInit {
-  
   antipasti: Antipasti[] = [];
   order: OrderItem[] = [];
   optionalIngredients: OptionalIngredient[] = [];
@@ -37,23 +35,62 @@ export class AntipastiComponent implements OnInit {
 
   deliveryCharge = {
     title: 'Consegna a domicilio',
-    price: 2.00,
+    price: 2.0,
     id: -1,
     quantity: 1,
     description: 'Consegna a domicilio',
     ingredienti: [],
     opzionali: [],
-    priceOpzionale: 2.00,
+    priceOpzionale: 2.0,
     image: '',
-    link: ''
+    link: '',
   };
+  categories: any;
+  errorMessage: string | undefined;
 
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private dataService: DataService) {}
 
-  ngOnInit(): void {
-    this.http.get<any>('assets/db.json').subscribe((data) => {
-      this.antipasti = data.categories;
-    });
+  ngOnInit() {
+    const token =
+      'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTk0MDgwMzUsImV4cCI6MTcxOTQxMTYzNSwic3ViIjoiMSJ9.JY3AbaR-MS3aLTLIGvXUldf6MsyiK9Sc3Q4sis4mHiQ'; // Sostituisci con il tuo token effettivo
+    this.fetchCategories(token);    
+  }
+
+  fetchCategories(token: string) {
+    this.dataService.fetchData('categories', token).subscribe(
+      (data) => {
+        this.categories = data;
+        this.antipasti = data;
+      },
+      (error) => {
+        console.error('Errore durante il recupero delle categorie:', error);
+        if (error.status === 0) {
+          this.errorMessage = 'Errore: impossibile connettersi al server.';
+        } else if (error.status === 403) {
+          this.errorMessage = 'Errore 403: Accesso vietato. Verifica i permessi e il token.';
+        } else {
+          this.errorMessage = `Errore ${error.status}: ${error.message}`;
+        }
+      }
+    );
+  }
+
+  fetchAntipasti(token: string) {
+    this.dataService.fetchData('antipasti', token).subscribe(
+      (data) => {
+        this.antipasti = data;
+      },
+      (error) => {
+        console.error('Errore durante il recupero degli antipasti:', error);
+        if (error.status === 0) {
+          this.errorMessage = 'Errore: impossibile connettersi al server.';
+        } else if (error.status === 403) {
+          this.errorMessage = 'Errore 403: Accesso vietato. Verifica i permessi e il token.';
+        } else {
+          this.errorMessage = `Errore ${error.status}: ${error.message}`;
+        }
+      }
+    );
   }
 
   selectDeliveryMethod(method: string): void {
@@ -65,7 +102,9 @@ export class AntipastiComponent implements OnInit {
   }
 
   addDeliveryCharge(): void {
-    const existingDeliveryCharge = this.order.find(item => item.id === this.deliveryCharge.id);
+    const existingDeliveryCharge = this.order.find(
+      (item) => item.id === this.deliveryCharge.id
+    );
     if (!existingDeliveryCharge) {
       this.order.push(this.deliveryCharge);
       this.updateTotalOrderPrice();
@@ -73,7 +112,9 @@ export class AntipastiComponent implements OnInit {
   }
 
   removeDeliveryCharge(): void {
-    const index = this.order.findIndex(item => item.id === this.deliveryCharge.id);
+    const index = this.order.findIndex(
+      (item) => item.id === this.deliveryCharge.id
+    );
     if (index !== -1) {
       this.order.splice(index, 1);
       this.updateTotalOrderPrice();
@@ -81,11 +122,12 @@ export class AntipastiComponent implements OnInit {
   }
 
   openAddToOrderModal(category: Antipasti): void {
+    console.log('openAddToOrderModal called with category:', category); // Aggiungi questo log
     const dialogRef = this.dialog.open(AddToOrderModalComponent, {
       width: '500px',
       data: this.convertToOrderItem(category),
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.addToOrder(result);
@@ -94,22 +136,25 @@ export class AntipastiComponent implements OnInit {
   }
 
   openConcludiOrdineModal(): void {
-    const dialogRef = this.dialog.open(ConcludiOrdineModalComponent, { 
+    const dialogRef = this.dialog.open(ConcludiOrdineModalComponent, {
       width: '500px',
       height: '400px',
       data: {
         addDeliveryCharge: () => this.addDeliveryCharge(),
-        removeDeliveryCharge: () => this.removeDeliveryCharge()
-      }
+        removeDeliveryCharge: () => this.removeDeliveryCharge(),
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
     });
   }
 
   convertToOrderItem(category: Antipasti): OrderItem {
-    const priceNumber = parseFloat(category.price.replace('€', '').trim());
+    // Assicurati che category.price sia una stringa e non undefined
+    const priceString = category.price ? category.price.toString() : '';
+    const priceNumber = parseFloat(priceString.replace('€', '').trim());
+  
     const opzionali = category['opzionali'].map((opzionale: OptionalIngredient) => ({
       name: opzionale.name,
       selected: opzionale.selected,
@@ -124,7 +169,7 @@ export class AntipastiComponent implements OnInit {
     }));
   
     return {
-      id: category.id,
+      id: category['categoryId'],
       price: priceNumber,
       title: category.title,
       description: category.title,
@@ -132,46 +177,56 @@ export class AntipastiComponent implements OnInit {
       quantity: 1,
       ingredienti: ingredienti,
       opzionali: opzionali,
-      image: category.image,
-      link: category.link,
+      image: category.image || 'assets/img/default-image.png',
+      link: category.link || '',
     };
   }
-  
+
   deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  addToOrder(category: OrderItem) {
-    category.priceOpzionale = this.calculatePrice(category); // Calcola il prezzo includendo gli ingredienti opzionali
-    const existingItem = this.order.find((item) => this.areEqualOrders(item, category));
-  
-    if (existingItem) {
-      existingItem.quantity++;
-    } else {
-      // Utilizzare deepCopy per creare una nuova istanza dell'ordine
-      const newItem = this.deepCopy(category);
-      this.order.push(newItem);
-    }
-    this.updateTotalOrderPrice();
+ addToOrder(category: OrderItem) {
+  console.log('addToOrder called with category:', category); // Aggiungi questo log
+  category.priceOpzionale = this.calculatePrice(category); // Calcola il prezzo includendo gli ingredienti opzionali
+  const existingItem = this.order.find((item) =>
+    this.areEqualOrders(item, category)
+  );
+
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    // Utilizzare deepCopy per creare una nuova istanza dell'ordine
+    const newItem = this.deepCopy(category);
+    this.order.push(newItem);
   }
-  
+  this.updateTotalOrderPrice();
+}
   areEqualOrders(order1: OrderItem, order2: OrderItem): boolean {
-        //Controllo della lunghezza degli array
-    if (order1.ingredienti.length !== order2.ingredienti.length || 
-        order1.opzionali.length !== order2.opzionali.length) {
+    // Controllo della lunghezza degli array
+    if (
+      order1.ingredienti.length !== order2.ingredienti.length ||
+      order1.opzionali.length !== order2.opzionali.length
+    ) {
       return false;
     }
-        //Confronto degli ingredienti
-    for (let i = 0; i < order1.ingredienti.length; i++) { 
-      if (order1.ingredienti[i].name !== order2.ingredienti[i].name || 
-          order1.ingredienti[i].selected !== order2.ingredienti[i].selected) {
+
+    // Confronto degli ingredienti
+    for (let i = 0; i < order1.ingredienti.length; i++) {
+      if (
+        order1.ingredienti[i].name !== order2.ingredienti[i].name ||
+        order1.ingredienti[i].selected !== order2.ingredienti[i].selected
+      ) {
         return false;
       }
     }
-    //Confronto degli opzionali
+
+    // Confronto degli opzionali
     for (let i = 0; i < order1.opzionali.length; i++) {
-      if (order1.opzionali[i].name !== order2.opzionali[i].name || 
-          order1.opzionali[i].selected !== order2.opzionali[i].selected) {
+      if (
+        order1.opzionali[i].name !== order2.opzionali[i].name ||
+        order1.opzionali[i].selected !== order2.opzionali[i].selected
+      ) {
         return false;
       }
     }
@@ -227,7 +282,7 @@ export class AntipastiComponent implements OnInit {
 
   calculatePrice(item: OrderItem): number {
     let basePrice = item.price;
-    item.opzionali.forEach(optionalIngredient => {
+    item.opzionali.forEach((optionalIngredient) => {
       if (optionalIngredient.selected) {
         basePrice += optionalIngredient.priceOpzionale;
       }
@@ -259,6 +314,6 @@ export class AntipastiComponent implements OnInit {
   }
 
   hasSelectedOptionalIngredients(item: OrderItem): boolean {
-    return item.opzionali.some(opt => opt.selected);
+    return item.opzionali.some((opt) => opt.selected);
   }
 }

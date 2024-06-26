@@ -23,52 +23,50 @@ import java.util.List;
 @EnableMethodSecurity
 public class Config {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.formLogin(http -> http.disable());
-        httpSecurity.csrf(http -> http.disable());
-        httpSecurity.sessionManagement(http -> http.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.cors(Customizer.withDefaults());
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.formLogin(http -> http.disable());
+    httpSecurity.csrf(http -> http.disable());
+    httpSecurity.sessionManagement(http -> http.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    httpSecurity.cors(Customizer.withDefaults());
 
-        httpSecurity.authorizeHttpRequests(http -> http.requestMatchers("/api/**").permitAll());
+    httpSecurity.authorizeHttpRequests(http -> http.requestMatchers("/api/**").permitAll());
 
 
-        httpSecurity.authorizeHttpRequests(http -> http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll());
+    httpSecurity.authorizeHttpRequests(http -> http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll());
 
-        httpSecurity.authorizeHttpRequests(http -> http.anyRequest().authenticated());
-        return httpSecurity.build();
-    }
+    httpSecurity.authorizeHttpRequests(http -> http.anyRequest().authenticated());
+    return httpSecurity.build();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("*"));
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.setAllowedOrigins(List.of("*"));
+    corsConfiguration.setAllowedMethods(List.of("*"));
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return source;
-    }
+    return source;
+  }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200")); // Sostituisci con l'URL del tuo frontend
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setAllowCredentials(true); // Se vuoi permettere l'invio di cookie
+  @Bean
+  public CorsFilter corsFilter() {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200")); // Sostituisci con l'URL del tuo frontend
+    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    corsConfiguration.setAllowedHeaders(List.of("*"));
+    corsConfiguration.setAllowCredentials(true); // Se vuoi permettere l'invio di cookie
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(source);
-    }
+    return new CorsFilter(source);
+  }
 }
-
-

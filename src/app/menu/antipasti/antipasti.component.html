@@ -7,37 +7,19 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-2 d-flex justify-content-start">
-                  <img
-                    [src]="category.image"
-                    [alt]="category.title"
-                    class="pizza-image"
-                  />
+                  <img [src]="category.image" [alt]="category.title" class="pizza-image" />
                 </div>
                 <div class="col-10">
                   <h5 class="card-title mx-3">{{ category.title }}</h5>
                   <p class="card-text mx-3">
-                    <ng-container
-                      *ngFor="
-                        let ingredient of category.ingredienti;
-                        let last = last
-                      "
-                    >
-                      <span *ngIf="ingredient.selected">{{
-                        ingredient.name
-                      }}</span>
+                    <ng-container *ngFor="let ingredient of category.ingredienti; let last = last">
+                      <span *ngIf="ingredient.selected">{{ ingredient.name }}</span>
                       <span *ngIf="ingredient.selected && !last">, </span>
                     </ng-container>
                   </p>
-
                   <div class="d-flex justify-content-end">
-                    <p class="pizza-price text-primary mt-2">
-                      {{ category.price }}
-                    </p>
-                    <span
-                      class="aggiungi mx-2"
-                      (click)="openAddToOrderModal(category)"
-                      >+</span
-                    >
+                    <p class="pizza-price text-primary mt-2">€ {{ category.price }}</p>
+                    <span class="aggiungi mx-2" (click)="openAddToOrderModal(category)">+</span>
                   </div>
                 </div>
               </div>
@@ -48,18 +30,10 @@
     </div>
     <div class="col-md-4">
       <div class="order-section">
-        <h5>
-          <span class="material-symbols-outlined">order_approve</span>
-          Il tuo ordine
-        </h5>
+        <h5><span class="material-symbols-outlined">order_approve</span> Il tuo ordine</h5>
         <ul>
           <li *ngFor="let item of order" class="order-item">
-            <button
-              mat-icon-button
-              class="edit-button"
-              *ngIf="item.id !== deliveryCharge.id"
-              (click)="editIngredients(item)"
-            >
+            <button mat-icon-button class="edit-button" *ngIf="item.id !== deliveryCharge.id" (click)="editIngredients(item)">
               <i class="material-icons">edit</i>
             </button>
             <div *ngIf="item.editMode">
@@ -70,123 +44,57 @@
                   {{ ingredient.name }}
                 </label>
               </div>
-
-              <h5 *ngIf="item.opzionali && item.opzionali.length > 0">
-                Condimenti opzionali:
-              </h5>
+              <h5 *ngIf="item.opzionali && item.opzionali.length > 0">Condimenti opzionali:</h5>
               <div *ngFor="let optionalIngredient of item.opzionali">
                 <label>
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="optionalIngredient.selected"
-                  />
-                  {{ optionalIngredient.name }} (€{{
-                    optionalIngredient.priceOpzionale
-                  }})
+                  <input type="checkbox" [(ngModel)]="optionalIngredient.selected" />
+                  {{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }})
                 </label>
               </div>
-
-              <button
-                mat-raised-button
-                color="primary"
-                (click)="saveIngredients(item)"
-              >
-                Salva modifiche
-              </button>
+              <button mat-raised-button color="primary" (click)="saveIngredients(item)">Salva modifiche</button>
             </div>
             <div class="quantity-controls">
-              <ng-container *ngIf="item.id !== deliveryCharge.id"> 
+              <ng-container *ngIf="item.id !== deliveryCharge.id">
                 <ng-container *ngIf="item.quantity > 1; else showPlusButton">
-                  <button
-                    class="quantity-button"
-                    (click)="increaseQuantity(item)"
-                  >
-                    +
-                  </button>
-                  <button
-                    class="quantity-button"
-                    (click)="decreaseQuantity(item)"
-                  >
-                    -
-                  </button>
+                  <button class="quantity-button" (click)="increaseQuantity(item)">+</button>
+                  <button class="quantity-button" (click)="decreaseQuantity(item)">-</button>
                 </ng-container>
                 <ng-template #showPlusButton>
-                  <button
-                    class="quantity-button"
-                    (click)="increaseQuantity(item)"
-                  >
-                    +
-                  </button>
+                  <button class="quantity-button" (click)="increaseQuantity(item)">+</button>
                 </ng-template>
               </ng-container>
-              <button class="quantity-button" (click)="removeItem(item)">
-                X
-              </button>
+              <button class="quantity-button" (click)="removeItem(item)">X</button>
             </div>
-            <!-- Sezione di dettaglio dell'ordine -->
             <div class="order-item-details">
               <div>
+                <p><strong>{{ item.quantity }}x {{ item.title }}</strong></p>
                 <p>
-                  <strong>{{ item.quantity }}x {{ item.title }}</strong>
-                </p>
-                <p>
-                  <!-- Visualizza gli ingredienti selezionati -->
                   <span>
-                    <ng-container
-                      *ngFor="
-                        let ingredient of item.ingredienti;
-                        let last = last
-                      "
-                    >
-                      <span *ngIf="ingredient.selected">{{
-                        ingredient.name
-                      }}</span>
-                      <ng-container *ngIf="!last && ingredient.selected"
-                        >,
-                      </ng-container>
+                    <ng-container *ngFor="let ingredient of item.ingredienti; let last = last">
+                      <span *ngIf="ingredient.selected">{{ ingredient.name }}</span>
+                      <ng-container *ngIf="!last && ingredient.selected">, </ng-container>
                     </ng-container>
                   </span>
                 </p>
-                <!-- Visualizza gli ingredienti deselezionati -->
                 <p>
                   <span *ngFor="let ingredient of item.ingredienti">
-                    <ng-container *ngIf="!ingredient.selected">
-                      - {{ ingredient.name }}
-                    </ng-container>
+                    <ng-container *ngIf="!ingredient.selected">- {{ ingredient.name }}</ng-container>
                   </span>
                 </p>
                 <ng-container *ngIf="hasSelectedOptionalIngredients(item)">
-                  <p>
-                    Condimenti opzionali:
-                    <ng-container
-                      *ngFor="
-                        let optionalIngredient of item.opzionali;
-                        let last = last
-                      "
-                    >
-                      <span *ngIf="optionalIngredient.selected"
-                        >{{ optionalIngredient.name }} (€{{
-                          optionalIngredient.priceOpzionale
-                        }}.00)</span
-                      >
-                      <span *ngIf="optionalIngredient.selected && !last"
-                        >,
-                      </span>
+                  <p>Condimenti opzionali:
+                    <ng-container *ngFor="let optionalIngredient of item.opzionali; let last = last">
+                      <span *ngIf="optionalIngredient.selected">{{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }})</span>
+                      <span *ngIf="optionalIngredient.selected && !last">, </span>
                     </ng-container>
                   </p>
                 </ng-container>
-                <!-- Visualizza il prezzo aggiornato dopo il salvataggio delle modifiche -->
-                <p class="pizza-price text-primary">
-                  €{{ item.priceOpzionale }}.00
-                </p>
+                <p class="pizza-price text-primary">€ {{ item.priceOpzionale }}</p>
               </div>
             </div>
           </li>
         </ul>
-        <p class="text-center bg-danger">
-          <strong>Totale ordine:</strong> € {{ totalOrderPrice }}.00
-        </p>
-        <!-- Aggiungi il pulsante "Concludi l'ordine" -->
+        <p class="text-center bg-danger"><strong>Totale ordine:</strong> € {{ totalOrderPrice }}</p>
         <button class="concludi-ordine-button" (click)="openConcludiOrdineModal()">Concludi l'ordine</button>
       </div>
     </div>

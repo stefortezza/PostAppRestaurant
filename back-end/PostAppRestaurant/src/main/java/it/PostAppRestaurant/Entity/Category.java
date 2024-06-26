@@ -11,19 +11,20 @@ import java.util.List;
 public class Category {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long categoryId;
+
   private String title;
-
-  @ElementCollection
-  private List<Ingredient> ingredienti;
-
-  @ElementCollection
-  private List<Opzionale> opzionali;
-
-  private String price;
+  private BigDecimal price;
   private String image;
   private String link;
 
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "category_id", referencedColumnName = "categoryId")
+  private List<Ingredient> ingredienti;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "category_id", referencedColumnName = "categoryId")
+  private List<Opzionale> opzionali;
 }
 
 
