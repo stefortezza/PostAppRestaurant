@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs/internal/Observable';
+
+declare var Stripe: any; // Dichiarazione per TypeScript
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss'],
 })
-export class CheckoutComponent implements OnInit {
-  selectDeliveryMethod(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
-  updateTableDetails() {
-    throw new Error('Method not implemented.');
-  }
+export class CheckoutComponent implements OnInit, AfterViewInit {
+  stripe: any;
+  handler: any = null;
+  $membership: Observable<any> | undefined;
   order: any = {
     items: [],
     totalPrice: 0,
@@ -30,13 +31,13 @@ export class CheckoutComponent implements OnInit {
 
   apiUrl = 'assets/db.json';
   tableDetails: any;
-  handler:any = null;
 
-  constructor(private http: HttpClient, private router: Router) {
+  @ViewChild('checkoutButton') checkoutButton!: ElementRef;
+
+  constructor(private http: HttpClient, private router: Router, private elementRef: ElementRef) {
     this.deliveryMethod =
       this.router.getCurrentNavigation()?.extras.state?.['deliveryMethod'] ||
       'N/A';
-  
   }
 
   ngOnInit(): void {
@@ -45,6 +46,14 @@ export class CheckoutComponent implements OnInit {
       this.order.totalPrice = data.totalPrice;
       this.loadStripe();
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.checkoutButton && this.checkoutButton.nativeElement) {
+      this.checkoutButton.nativeElement.addEventListener('click', this.pay.bind(this));
+    } else {
+      console.error('Element with ID "checkout-button" not found or undefined.');
+    }
   }
 
   getOrder() {
@@ -60,31 +69,30 @@ export class CheckoutComponent implements OnInit {
     this.deliveryMethod = `Consegna a domicilio - ${this.deliveryAddress.address}, ${this.deliveryAddress.streetNumber}, ${this.deliveryAddress.city}`;
   }
 
- 
-  pay(amount: any) {    
- 
-    var handler = (<any>window).StripeCheckout.configure({
-      key: 'pk_test_51HxRkiCumzEESdU2Z1FzfCVAJyiVHyHifo0GeCMAyzHPFme6v6ahYeYbQPpD9BvXbAacO2yFQ8ETlKjo4pkHSHSh00qKzqUVK9',
-      locale: 'auto',
-      token: function (token: any) {
-        // You can access the token ID with `token.id`.
-        // Get the token ID to your server-side code for use.
-        console.log(token)
-        alert('Token Created!!');
+  pay(paymentForm: NgForm) {
+    const { amount, description } = paymentForm.value;
+
+    var stripe = Stripe('pk_live_51PQVYYRtQw0gA7BPOekeg9hUCr6yfHtiq4ZNta4wlDZegKHDV7aRhUjcS7j9RoxsBpDQsVy7QgCgWSRrnKDnUkys00WnNSG5bY', {
+      betas: ['checkout_beta_4']
+    });
+
+    stripe.redirectToCheckout({
+      items: [{ sku: 'sku_EouPQJ6eEYCU1q', quantity: 1 }],
+      successUrl: 'https://formhero.com/',
+      cancelUrl: 'https://formhero.com/',
+    })
+    .then(function (result: any) {
+      if (result.error) {
+        var displayError = document.getElementById('error-message');
+        if (displayError) {
+          displayError.textContent = result.error.message;
+        }
       }
     });
- 
-    handler.open({
-      name: 'Demo Site',
-      description: '2 widgets',
-      amount: amount * 100
-    });
- 
   }
- 
+
   loadStripe() {
-     
-    if(!window.document.getElementById('stripe-script')) {
+    if (!window.document.getElementById('stripe-script')) {
       var s = window.document.createElement("script");
       s.id = "stripe-script";
       s.type = "text/javascript";
@@ -94,14 +102,12 @@ export class CheckoutComponent implements OnInit {
           key: 'pk_live_51PQVYYRtQw0gA7BPOekeg9hUCr6yfHtiq4ZNta4wlDZegKHDV7aRhUjcS7j9RoxsBpDQsVy7QgCgWSRrnKDnUkys00WnNSG5bY',
           locale: 'auto',
           token: function (token: any) {
-            // You can access the token ID with `token.id`.
-            // Get the token ID to your server-side code for use.
-            console.log(token)
+            console.log(token);
             alert('Payment Success!!');
           }
         });
-      }
-       
+      };
+
       window.document.body.appendChild(s);
     }
   }

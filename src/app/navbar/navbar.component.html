@@ -1,15 +1,28 @@
 <nav class="navbar">
-    <div class="navbar-content">
-      <div class="logo" >Logo</div>
-      <div class="auth-links">
-        <div class="register-forgot text-end mx-2">
-          <a href="#" class="register-link fw-semibold mb-0 m-0">Registrazione</a>
-          <a href="#" class="forgot-password-link mt-0">Password dimenticata?</a>
+  <div class="navbar-content">
+    <div class="logo">Logo</div>
+    <div class="auth-links">
+      <div class="register-forgot text-end mx-2" *ngIf="!user">
+        <a routerLink="/registrati" class="register-link fw-semibold mb-0 m-0">Registrazione</a>
+        <a href="#" class="forgot-password-link mt-0">Password dimenticata?</a>
+      </div>
+      <input *ngIf="!user" type="email" placeholder="Email" class="email-input px-2" [(ngModel)]="email">
+      <input *ngIf="!user" type="password" placeholder="Password" class="password-input px-2" [(ngModel)]="password">
+      <button *ngIf="!user" class="login-button" (click)="login()">Login</button>
+      <div *ngIf="user" class="welcome-text">
+        Benvenuto {{ user.user.name }} {{ user.user.surname }}
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Account
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Visualizza account</a>
+            <a class="dropdown-item" href="#">Password dimenticata?</a>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+          </div>
         </div>
-        <input type="email" placeholder="Email" class="email-input px-2">
-        <input type="password" placeholder="Password" class="password-input px-2">
-        <button class="login-button">Login</button>
       </div>
     </div>
-  </nav>
-  
+  </div>
+</nav>

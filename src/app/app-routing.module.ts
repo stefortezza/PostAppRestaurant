@@ -8,6 +8,8 @@ import { DolciComponent } from './menu/dolci/dolci.component';
 import { DigestiviComponent } from './menu/digestivi/digestivi.component';
 import { MenuComponent } from './menu/menu.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
 const routes: Routes = [
   { path: 'menu', component: MenuComponent },
@@ -18,6 +20,8 @@ const routes: Routes = [
   { path: 'menu/dolci', component: DolciComponent },
   { path: 'menu/digestivi', component: DigestiviComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'accedi', component: LoginComponent },
+  { path: 'registrati', component: RegisterComponent },
   { path: '', redirectTo: '/', pathMatch: 'full' },
   { path: '**', redirectTo: '/' }
 ];

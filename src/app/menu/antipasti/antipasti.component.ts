@@ -7,6 +7,7 @@ import { OptionalIngredient } from 'src/interfaces/antipasti';
 import { ConcludiOrdineModalComponent } from '../concludi-ordine-modal/concludi-ordine-modal.component';
 import { DataService } from 'src/app/service/data-service';
 
+
 interface OrderItem {
   quantity: number;
   price: number;
@@ -52,7 +53,7 @@ export class AntipastiComponent implements OnInit {
 
   ngOnInit() {
     const token =
-      'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTk0MDgwMzUsImV4cCI6MTcxOTQxMTYzNSwic3ViIjoiMSJ9.JY3AbaR-MS3aLTLIGvXUldf6MsyiK9Sc3Q4sis4mHiQ'; // Sostituisci con il tuo token effettivo
+      'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTk1NjE3ODUsImV4cCI6MTcxOTU2NTM4NSwic3ViIjoiMSJ9._Rg2AQAZa_Amjv9nAvg_zptR_OBOCRleHDEMK9jo-Us'; // Sostituisci con il tuo token effettivo
     this.fetchCategories(token);    
   }
 
@@ -134,6 +135,7 @@ export class AntipastiComponent implements OnInit {
       }
     });
   }
+  
 
   openConcludiOrdineModal(): void {
     const dialogRef = this.dialog.open(ConcludiOrdineModalComponent, {

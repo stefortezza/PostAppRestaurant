@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
-
+import { TokenInterceptor } from './auth/token.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -22,6 +22,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { ConcludiOrdineModalComponent } from './menu/concludi-ordine-modal/concludi-ordine-modal.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { FooterComponent } from './footer/footer.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
 
 @NgModule({
@@ -39,7 +42,10 @@ import { CheckoutComponent } from './checkout/checkout.component';
     NewsletterModalComponent,
     AddToOrderModalComponent,
     ConcludiOrdineModalComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    FooterComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +57,13 @@ import { CheckoutComponent } from './checkout/checkout.component';
     MatButtonModule,
     MatIconModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,     //
+      useClass: TokenInterceptor,   // l'interceptor esiste ed è esposto a livello i app module e qualunque chiamata http passerà da lui
+      multi: true     
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
