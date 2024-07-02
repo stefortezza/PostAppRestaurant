@@ -3,4 +3,5 @@ export interface OptionalIngredient {
     priceOpzionale: number;
     name: string;
     selected: boolean;
+    categoryId: number;
 }

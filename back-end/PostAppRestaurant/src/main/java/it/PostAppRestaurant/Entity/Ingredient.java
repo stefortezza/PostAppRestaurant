@@ -14,7 +14,7 @@ public class Ingredient {
   private String name;
   private boolean selected;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   @JsonIgnore
   private Category category;

@@ -15,27 +15,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private AuthService authService;
+  @Autowired
+  private UserService userService;
 
-    @PostMapping("/auth/register")
-    public void register(@RequestBody @Validated UserDto userDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
-                    .reduce("", (s, s2) -> s + s2));
-        }
-        userService.saveUser(userDto);
+  @PostMapping("/auth/register")
+  public void register(@RequestBody @Validated UserDto userDto, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      throw new BadRequestException(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+        .reduce("", (s, s2) -> s + s2));
+    }
+    userService.saveUser(userDto);
+  }
+
+  @PostMapping("/auth/login")
+  public String login(@RequestBody @Validated UserLoginDto userLoginDto, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      throw new BadRequestException(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+        .reduce("", (s, s2) -> s + s2));
     }
 
-    @PostMapping("/auth/login")
-    public String login(@RequestBody @Validated UserLoginDto userLoginDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
-                    .reduce("", (s, s2) -> s + s2));
-        }
-
-        return authService.authenticateUserAndCreateToken(userLoginDto);
-    }
+    return authService.authenticateUserAndCreateToken(userLoginDto);
+  }
 }

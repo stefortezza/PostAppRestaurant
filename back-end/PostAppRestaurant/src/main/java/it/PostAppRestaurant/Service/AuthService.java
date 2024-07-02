@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
   @Autowired
   private UserService userService;
 
@@ -20,11 +21,10 @@ public class AuthService {
   private PasswordEncoder passwordEncoder;
 
   public String authenticateUserAndCreateToken(UserLoginDto userLoginDto) {
-    User user = userService.getUserByEmail(userLoginDto.getEmail()); //METODO DA INSERIRE
+    User user = userService.getUserByEmail(userLoginDto.getEmail());
 
     if (passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
       return jwtTool.createToken(user);
-
     } else {
       throw new UnauthorizedException("Error in authorization, relogin!");
     }

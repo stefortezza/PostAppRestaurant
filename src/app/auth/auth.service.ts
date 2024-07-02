@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 export class AuthService {
   private apiURL = 'http://localhost:8080/auth';
   private token: string | null = null;
-  private authSub = new BehaviorSubject<AuthData | null>(this.getStoredUser());
+  private authSub = new BehaviorSubject<string | null>(this.getStoredUser());
   user$ = this.authSub.asObservable();
 
   constructor(private http: HttpClient) {
@@ -35,9 +35,9 @@ export class AuthService {
 
         this.token = token;
         console.log('Token received:', token);
-        this.authSub.next(authData);
+        this.authSub.next(token);
 
-        localStorage.setItem('user', JSON.stringify(authData));
+        localStorage.setItem('user', token);
       }),
       catchError(error => {
         console.error('Login error:', error);
@@ -52,9 +52,9 @@ export class AuthService {
     localStorage.removeItem('user');
   }
 
-  private getStoredUser(): AuthData | null {
+  private getStoredUser(): string | null {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser || null;
   }
 
   signUp(user: { email: string, password: string }): Observable<string> {

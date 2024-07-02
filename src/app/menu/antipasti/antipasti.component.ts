@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddToOrderModalComponent } from '../add-to-order-modal/add-to-order-modal.component';
-import { Antipasti } from 'src/interfaces/antipasti';
-import { Ingredient } from 'src/interfaces/ingredient';
-import { OptionalIngredient } from 'src/interfaces/antipasti';
-import { ConcludiOrdineModalComponent } from '../concludi-ordine-modal/concludi-ordine-modal.component';
 import { DataService } from 'src/app/service/data-service';
-
+import { Antipasti, Ingredient, OptionalIngredient } from 'src/interfaces/antipasti'; // Assicurati che il percorso sia corretto per i tuoi file di interfaccia
+import { ConcludiOrdineModalComponent } from '../concludi-ordine-modal/concludi-ordine-modal.component';
 
 interface OrderItem {
   quantity: number;
@@ -52,37 +49,17 @@ export class AntipastiComponent implements OnInit {
   constructor(private dialog: MatDialog, private dataService: DataService) {}
 
   ngOnInit() {
-    const token =
-      'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTk1NjE3ODUsImV4cCI6MTcxOTU2NTM4NSwic3ViIjoiMSJ9._Rg2AQAZa_Amjv9nAvg_zptR_OBOCRleHDEMK9jo-Us'; // Sostituisci con il tuo token effettivo
-    this.fetchCategories(token);    
+    this.fetchCategories();    
   }
 
-  fetchCategories(token: string) {
-    this.dataService.fetchData('categories', token).subscribe(
+  fetchCategories() {
+    this.dataService.fetchData('categories').subscribe(
       (data) => {
         this.categories = data;
         this.antipasti = data;
       },
       (error) => {
         console.error('Errore durante il recupero delle categorie:', error);
-        if (error.status === 0) {
-          this.errorMessage = 'Errore: impossibile connettersi al server.';
-        } else if (error.status === 403) {
-          this.errorMessage = 'Errore 403: Accesso vietato. Verifica i permessi e il token.';
-        } else {
-          this.errorMessage = `Errore ${error.status}: ${error.message}`;
-        }
-      }
-    );
-  }
-
-  fetchAntipasti(token: string) {
-    this.dataService.fetchData('antipasti', token).subscribe(
-      (data) => {
-        this.antipasti = data;
-      },
-      (error) => {
-        console.error('Errore durante il recupero degli antipasti:', error);
         if (error.status === 0) {
           this.errorMessage = 'Errore: impossibile connettersi al server.';
         } else if (error.status === 403) {
@@ -123,7 +100,7 @@ export class AntipastiComponent implements OnInit {
   }
 
   openAddToOrderModal(category: Antipasti): void {
-    console.log('openAddToOrderModal called with category:', category); // Aggiungi questo log
+    console.log('openAddToOrderModal called with category:', category);
     const dialogRef = this.dialog.open(AddToOrderModalComponent, {
       width: '500px',
       data: this.convertToOrderItem(category),
@@ -135,7 +112,6 @@ export class AntipastiComponent implements OnInit {
       }
     });
   }
-  
 
   openConcludiOrdineModal(): void {
     const dialogRef = this.dialog.open(ConcludiOrdineModalComponent, {
@@ -153,28 +129,26 @@ export class AntipastiComponent implements OnInit {
   }
 
   convertToOrderItem(category: Antipasti): OrderItem {
-    // Assicurati che category.price sia una stringa e non undefined
     const priceString = category.price ? category.price.toString() : '';
     const priceNumber = parseFloat(priceString.replace('€', '').trim());
-  
-    const opzionali = category['opzionali'].map((opzionale: OptionalIngredient) => ({
+    
+    const opzionali = category.opzionali.map((opzionale: any) => ({
       name: opzionale.name,
       selected: opzionale.selected,
-      priceOpzionale: typeof opzionale.priceOpzionale === 'string'
-        ? parseFloat(opzionale.priceOpzionale)
-        : opzionale.priceOpzionale,
+      priceOpzionale: opzionale.priceOpzionale || 0, // Assicurati che priceOpzionale sia presente o assegna un valore di default
+      price: opzionale.price || 0, // Assicura che ci sia una proprietà price
     }));
-  
-    const ingredienti = category.ingredienti.map((ingredient: Ingredient) => ({
+    
+    const ingredienti = category.ingredienti.map((ingredient: any) => ({
       name: ingredient.name,
       selected: ingredient.selected,
     }));
-  
+    
     return {
-      id: category['categoryId'],
+      id: category.categoryId || 0, // Assicura che categoryId sia presente o assegna un valore di default
       price: priceNumber,
-      title: category.title,
-      description: category.title,
+      title: category.title || '',
+      description: category.title || '',
       priceOpzionale: priceNumber,
       quantity: 1,
       ingredienti: ingredienti,
@@ -183,29 +157,29 @@ export class AntipastiComponent implements OnInit {
       link: category.link || '',
     };
   }
+  
 
   deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
   }
 
- addToOrder(category: OrderItem) {
-  console.log('addToOrder called with category:', category); // Aggiungi questo log
-  category.priceOpzionale = this.calculatePrice(category); // Calcola il prezzo includendo gli ingredienti opzionali
-  const existingItem = this.order.find((item) =>
-    this.areEqualOrders(item, category)
-  );
+  addToOrder(category: OrderItem) {
+    console.log('addToOrder called with category:', category);
+    category.priceOpzionale = this.calculatePrice(category);
+    const existingItem = this.order.find((item) =>
+      this.areEqualOrders(item, category)
+    );
 
-  if (existingItem) {
-    existingItem.quantity++;
-  } else {
-    // Utilizzare deepCopy per creare una nuova istanza dell'ordine
-    const newItem = this.deepCopy(category);
-    this.order.push(newItem);
+    if (existingItem) {
+      existingItem.quantity++;
+    } else {
+      const newItem = this.deepCopy(category);
+      this.order.push(newItem);
+    }
+    this.updateTotalOrderPrice();
   }
-  this.updateTotalOrderPrice();
-}
+
   areEqualOrders(order1: OrderItem, order2: OrderItem): boolean {
-    // Controllo della lunghezza degli array
     if (
       order1.ingredienti.length !== order2.ingredienti.length ||
       order1.opzionali.length !== order2.opzionali.length
@@ -213,7 +187,6 @@ export class AntipastiComponent implements OnInit {
       return false;
     }
 
-    // Confronto degli ingredienti
     for (let i = 0; i < order1.ingredienti.length; i++) {
       if (
         order1.ingredienti[i].name !== order2.ingredienti[i].name ||
@@ -223,7 +196,6 @@ export class AntipastiComponent implements OnInit {
       }
     }
 
-    // Confronto degli opzionali
     for (let i = 0; i < order1.opzionali.length; i++) {
       if (
         order1.opzionali[i].name !== order2.opzionali[i].name ||

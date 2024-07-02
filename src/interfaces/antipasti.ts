@@ -1,15 +1,16 @@
 export interface Antipasti {
-[x: string]: any;
+  categoryId: number;
   id: number;
   title: string;
   description: string;
   price: string;
   image: string;
   link: string;
-  ingredienti: Ingredient[];
+  ingredienti: any[]; 
+  opzionali: any[];   
 }
 
-interface Ingredient {
+export interface Ingredient {
   name: string;
   selected: boolean;
   price?: number;

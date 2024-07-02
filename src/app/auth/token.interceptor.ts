@@ -24,7 +24,7 @@ export class TokenInterceptor implements HttpInterceptor {
             switchMap(user => {
                 if (user) {
                     const newReq = request.clone({
-                        headers: request.headers.append('Authorization', `Bearer ${user.accessToken}`)
+                        headers: request.headers.append('Authorization', `Bearer ${localStorage.getItem('user')}`)
                     });
                     return next.handle(newReq);
                 } else {

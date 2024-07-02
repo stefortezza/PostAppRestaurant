@@ -7,12 +7,10 @@ import java.util.List;
 
 @Data
 public class CategoryDTO {
-  private Long categoryId;
   private String title;
-  private List<IngredientDTO> ingredienti;
-  private List<OpzionaleDTO> opzionali;
   private BigDecimal price;
   private String image;
   private String link;
+  private List<IngredientDTO> ingredienti;
+  private List<OpzionaleDTO> opzionali;
 }
-

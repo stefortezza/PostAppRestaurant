@@ -11,17 +11,8 @@
       <button *ngIf="!user" class="login-button" (click)="login()">Login</button>
       <div *ngIf="user" class="welcome-text">
         Benvenuto {{ user.user.name }} {{ user.user.surname }}
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Account
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Visualizza account</a>
-            <a class="dropdown-item" href="#">Password dimenticata?</a>
-            <div class="dropdown-divider"></div>
-            <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
-          </div>
-        </div>
+        <a routerLink="/create-category" class="btn btn-primary mx-2">Inserisci Categoria</a>
+        <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
       </div>
     </div>
   </div>

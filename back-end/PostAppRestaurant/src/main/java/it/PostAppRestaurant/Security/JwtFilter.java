@@ -1,3 +1,4 @@
+
 package it.PostAppRestaurant.Security;
 import it.PostAppRestaurant.Entity.User;
 import it.PostAppRestaurant.Exceptions.UnauthorizedException;
@@ -16,15 +17,16 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTool jwtTool;
+  @Autowired
+  private JwtTool jwtTool;
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -43,12 +45,13 @@ public class JwtFilter extends OncePerRequestFilter {
     //sicurezza!
     int userId = jwtTool.getIdFromToken(token);
 
-    User user = userService.getUserById(userId);
-    if (user != null) {
+    Optional<User> userOptional = userService.getUserById(userId);
+    if (userOptional.isPresent()){
+      User user = userOptional.get();
 
       Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authentication);
-    } else {
+    }else {
       throw new UserNotFoundException("User with id=" + userId + " not found!");
     }
 

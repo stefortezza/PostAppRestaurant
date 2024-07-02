@@ -1,99 +1,107 @@
 package it.PostAppRestaurant.Service;
 
-import com.cloudinary.Cloudinary;
 import it.PostAppRestaurant.Dto.UserDto;
 import it.PostAppRestaurant.Entity.User;
 import it.PostAppRestaurant.Enums.Role;
 import it.PostAppRestaurant.Exceptions.UserNotFoundException;
 import it.PostAppRestaurant.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  @Autowired
+  private JavaMailSender javaMailSender;
 
-    @Autowired
-    private Cloudinary cloudinary;
-
-    public User saveUser(UserDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
-        user.setRole(Role.USER);
-
-        sendRegistrationMail(user);
-
-        userRepository.save(user);
-        System.out.println("User with id " + user.getUserId() + " correctly saved!");
-        return user;
+  public User saveUser(UserDto userDto) {
+    // Controlla se esiste già un utente con la stessa email
+    Optional<User> existingUser = userRepository.findByEmail(userDto.getEmail());
+    if (existingUser.isPresent()) {
+      throw new IllegalArgumentException("Email già registrata!");
     }
 
-    public Page<User> getAllUsers(int page, int size, String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return userRepository.findAll(pageable);
+    // Creazione del nuovo utente solo se l'email non esiste già
+    User user = new User();
+    user.setUsername(userDto.getUsername());
+    user.setEmail(userDto.getEmail());
+    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    user.setName(userDto.getName());
+    user.setSurname(userDto.getSurname());
+    user.setRole(Role.USER);
+
+    // Invio email di registrazione
+    sendRegistrationMail(user);
+
+    // Salvataggio dell'utente nel repository
+    userRepository.save(user);
+    System.out.println("User with id " + user.getUserId() + " correctly saved!");
+    return user;
+  }
+
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
+
+  public Optional<User> getUserById(int id) {
+    return userRepository.findById(id);
+  }
+
+  public User getUserByEmail(String email) {
+    Optional<User> userOptional = userRepository.findByEmail(email);
+
+    if (userOptional.isPresent()) {
+      return userOptional.get();
+    } else {
+      throw new UserNotFoundException("Utente con email=" + email + " non trovato!");
     }
+  }
 
-    public User getUserById(int id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+  public User updateUser(int id, UserDto userDto) {
+    Optional<User> userOptional = getUserById(id);
+    if (userOptional.isPresent()) {
+      User user = userOptional.get();
+      user.setName(userDto.getName());
+      user.setSurname(userDto.getSurname());
+      user.setEmail(userDto.getEmail());
+
+      user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+      return userRepository.save(user);
+    } else {
+      throw new UserNotFoundException("Utente con id=" + id + " non trovato!");
     }
+  }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email " + email));
+  public String deleteUser(int id) {
+    Optional<User> userOptional = getUserById(id);
+    if (userOptional.isPresent()) {
+      userRepository.deleteById(id);
+      return "Utente con id=" + id + " correttamente eliminato!";
+    } else {
+      throw new UserNotFoundException("Utente con id=" + id + " non trovato!");
     }
+  }
 
+  private void sendRegistrationMail(User user) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(user.getEmail());
+    message.setSubject("Conferma Registrazione");
+    message.setText("Gentile " + user.getName() + ",\n\n"
+      + "Benvenuto nella nostra applicazione! La tua registrazione è avvenuta con successo.");
 
-    public String updateUser(int id, UserDto userDto) {
-        User user = getUserById(id);
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
-
-        userRepository.save(user);
-
-        return "User with id " + user.getUserId() + " correctly updated!";
-    }
-
-    public String deleteUser(int id) {
-        User user = getUserById(id);
-        userRepository.deleteById(id);
-        return "User with id=" + id + " correctly deleted!";
-    }
-
-
-    private void sendRegistrationMail(User user) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Rest Service Registration");
-        message.setText("Congratulations, " + user.getName() + " " + user.getSurname() + "! Successful registration to this rest service");
-
-        javaMailSender.send(message);
-    }
+    javaMailSender.send(message);
+  }
 }
-

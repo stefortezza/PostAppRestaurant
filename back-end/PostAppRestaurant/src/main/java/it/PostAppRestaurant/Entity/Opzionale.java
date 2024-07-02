@@ -17,7 +17,7 @@ public class Opzionale {
   private BigDecimal priceOpzionale;
   private boolean selected;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   @JsonIgnore
   private Category category;

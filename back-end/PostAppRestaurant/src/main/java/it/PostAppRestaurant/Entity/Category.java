@@ -18,13 +18,9 @@ public class Category {
   private String image;
   private String link;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_id", referencedColumnName = "categoryId")
+  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Ingredient> ingredienti;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_id", referencedColumnName = "categoryId")
+  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Opzionale> opzionali;
 }
-
-

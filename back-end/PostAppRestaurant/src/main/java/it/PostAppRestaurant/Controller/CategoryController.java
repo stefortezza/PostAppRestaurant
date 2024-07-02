@@ -19,10 +19,10 @@ public class CategoryController {
   @Autowired
   private CategoryService categoryService;
 
-  @PostMapping ("/categories")
+  @PostMapping("/categories")
   @ResponseStatus(HttpStatus.CREATED)
   public Category createCategory(@RequestBody @Validated CategoryDTO categoryDTO, BindingResult bindingResult) {
-    if(bindingResult.hasErrors()){
+    if (bindingResult.hasErrors()) {
       throw new BadRequestException(bindingResult.getAllErrors().stream()
         .map(objectError -> objectError.getDefaultMessage())
         .reduce("", (s, s2) -> s + s2));
@@ -42,7 +42,7 @@ public class CategoryController {
 
   @PutMapping("/categories/{categoryId}")
   public Category updateCategory(@PathVariable Long categoryId, @RequestBody @Validated CategoryDTO categoryDTO, BindingResult bindingResult) {
-    if(bindingResult.hasErrors()){
+    if (bindingResult.hasErrors()) {
       throw new BadRequestException(bindingResult.getAllErrors().stream()
         .map(objectError -> objectError.getDefaultMessage())
         .reduce("", (s, s2) -> s + s2));

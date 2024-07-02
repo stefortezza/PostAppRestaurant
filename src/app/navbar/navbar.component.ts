@@ -15,8 +15,12 @@ export class NavbarComponent implements OnInit {
   constructor(private authSrv: AuthService) {}
 
   ngOnInit(): void {
-    this.authSrv.user$.subscribe((user) => {
-      this.user = user;
+    this.authSrv.user$.subscribe((token) => {
+      if (token) {
+        this.user = this.getUserDetailsFromToken(token);
+      } else {
+        this.user = null;
+      }
     });
   }
 
@@ -25,13 +29,11 @@ export class NavbarComponent implements OnInit {
       const userCredentials = { email: this.email, password: this.password };
       this.authSrv.login(userCredentials).subscribe({
         next: () => {
-          // Login successful, clear form fields if needed
           this.email = '';
           this.password = '';
         },
         error: (error) => {
           console.error('Login error:', error);
-          // Handle error as needed
         }
       });
     }
@@ -39,5 +41,18 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.authSrv.logout();
+    this.user = null; 
+  }
+
+  private getUserDetailsFromToken(token: string): AuthData {
+    return {
+      accessToken: token,
+      user: {
+        id: '1', // Sostituisci con i dettagli effettivi dell'utente
+        name: '', // Sostituisci con i dettagli effettivi dell'utente
+        surname: '', // Sostituisci con i dettagli effettivi dell'utente
+        email: '' // Sostituisci con i dettagli effettivi dell'utente
+      }
+    };
   }
 }

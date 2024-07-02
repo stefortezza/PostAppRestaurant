@@ -25,6 +25,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { AddCategoryCreateComponent } from './menu/add-category-create/add-category-create.component';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { RegisterComponent } from './auth/register/register.component';
     FooterComponent,
     LoginComponent,
     RegisterComponent,
+    AddCategoryCreateComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +61,7 @@ import { RegisterComponent } from './auth/register/register.component';
   ],
   providers: [
     {
-      provide: HTTP_INTERCEPTORS,     //
+      provide: HTTP_INTERCEPTORS,    
       useClass: TokenInterceptor,   // l'interceptor esiste ed è esposto a livello i app module e qualunque chiamata http passerà da lui
       multi: true     
     }
