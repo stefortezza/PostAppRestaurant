@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddToOrderModalComponent } from '../add-to-order-modal/add-to-order-modal.component';
 import { DataService } from 'src/app/service/data-service';
-import { Antipasti, Ingredient, OptionalIngredient } from 'src/interfaces/antipasti'; // Assicurati che il percorso sia corretto per i tuoi file di interfaccia
+import { Antipasti, Ingredient, OptionalIngredient } from 'src/interfaces/antipasti'; 
 import { ConcludiOrdineModalComponent } from '../concludi-ordine-modal/concludi-ordine-modal.component';
+import { OrderService } from 'src/app/service/order.service';
 
 interface OrderItem {
   quantity: number;
@@ -46,7 +47,7 @@ export class AntipastiComponent implements OnInit {
   categories: any;
   errorMessage: string | undefined;
 
-  constructor(private dialog: MatDialog, private dataService: DataService) {}
+  constructor(private dialog: MatDialog, private dataService: DataService, private orderService: OrderService) {}
 
   ngOnInit() {
     this.fetchCategories();    
@@ -135,8 +136,8 @@ export class AntipastiComponent implements OnInit {
     const opzionali = category.opzionali.map((opzionale: any) => ({
       name: opzionale.name,
       selected: opzionale.selected,
-      priceOpzionale: opzionale.priceOpzionale || 0, // Assicurati che priceOpzionale sia presente o assegna un valore di default
-      price: opzionale.price || 0, // Assicura che ci sia una proprietà price
+      priceOpzionale: opzionale.priceOpzionale || 0,
+      price: opzionale.price || 0, 
     }));
     
     const ingredienti = category.ingredienti.map((ingredient: any) => ({
@@ -145,7 +146,7 @@ export class AntipastiComponent implements OnInit {
     }));
     
     return {
-      id: category.categoryId || 0, // Assicura che categoryId sia presente o assegna un valore di default
+      id: category.categoryId || 0, 
       price: priceNumber,
       title: category.title || '',
       description: category.title || '',
@@ -176,6 +177,7 @@ export class AntipastiComponent implements OnInit {
       const newItem = this.deepCopy(category);
       this.order.push(newItem);
     }
+    this.orderService.addItem(category);  
     this.updateTotalOrderPrice();
   }
 

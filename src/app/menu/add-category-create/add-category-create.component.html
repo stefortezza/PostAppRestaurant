@@ -1,5 +1,6 @@
+<!-- INSEIRRE CHE SOLO L'ADMIN PUO` VEDERE IL PULSANTE AGGIUNGI CATEGR -->
 <div class="container mt-4">
-    <h2>Inserisci Categoria</h2>
+    <h2>Inserisci Prodotto</h2>
     <form (ngSubmit)="createAntipasto()">
       <div class="mb-3">
         <label for="title" class="form-label">Titolo</label>
@@ -33,12 +34,7 @@
         <input type="text" id="image" class="form-control" [(ngModel)]="antipasti.image" name="image" required>
       </div>
       
-      <div class="mb-3">
-        <label for="link" class="form-label">Link</label>
-        <input type="text" id="link" class="form-control" [(ngModel)]="antipasti.link" name="link" required>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Crea Categoria</button>
+      <button type="submit" class="btn btn-primary">Inserisci Prodotto</button>
       
       <p *ngIf="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
     </form>

@@ -26,7 +26,9 @@ import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AddCategoryCreateComponent } from './menu/add-category-create/add-category-create.component';
-
+import { NgxPayPalModule } from 'ngx-paypal';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,6 @@ import { AddCategoryCreateComponent } from './menu/add-category-create/add-categ
     NewsletterModalComponent,
     AddToOrderModalComponent,
     ConcludiOrdineModalComponent,
-    CheckoutComponent,
     FooterComponent,
     LoginComponent,
     RegisterComponent,
@@ -57,15 +58,18 @@ import { AddCategoryCreateComponent } from './menu/add-category-create/add-categ
     BrowserAnimationsModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    NgxPayPalModule,
+    CommonModule,
+    RouterOutlet
   ],
   providers: [
     {
-      provide: HTTP_INTERCEPTORS,    
-      useClass: TokenInterceptor,   // l'interceptor esiste ed è esposto a livello i app module e qualunque chiamata http passerà da lui
-      multi: true     
-    }
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor, // l'interceptor esiste ed è esposto a livello i app module e qualunque chiamata http passerà da lui
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

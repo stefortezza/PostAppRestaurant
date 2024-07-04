@@ -6,6 +6,7 @@ import it.PostAppRestaurant.Exceptions.BadRequestException;
 import it.PostAppRestaurant.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class CategoryController {
 
   @PostMapping("/categories")
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ADMIN')")
   public Category createCategory(@RequestBody @Validated CategoryDTO categoryDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new BadRequestException(bindingResult.getAllErrors().stream()
@@ -41,6 +43,7 @@ public class CategoryController {
   }
 
   @PutMapping("/categories/{categoryId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public Category updateCategory(@PathVariable Long categoryId, @RequestBody @Validated CategoryDTO categoryDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new BadRequestException(bindingResult.getAllErrors().stream()
@@ -51,6 +54,7 @@ public class CategoryController {
   }
 
   @DeleteMapping("/categories/{categoryId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteCategory(@PathVariable Long categoryId) {
     categoryService.deleteCategory(categoryId);

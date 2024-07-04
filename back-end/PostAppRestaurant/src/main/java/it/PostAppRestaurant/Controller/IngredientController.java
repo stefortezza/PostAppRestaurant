@@ -3,6 +3,7 @@ package it.PostAppRestaurant.Controller;
 import it.PostAppRestaurant.Dto.IngredientDTO;
 import it.PostAppRestaurant.Service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,16 +27,19 @@ public class IngredientController {
   }
 
   @PostMapping
+  @PreAuthorize("hasAuthority('ADMIN')")
   public IngredientDTO saveIngredient(@RequestBody @Validated IngredientDTO ingredientDTO) {
     return ingredientService.saveIngredient(ingredientDTO);
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public IngredientDTO updateIngredient(@PathVariable Long id, @RequestBody @Validated IngredientDTO ingredientDTO) {
     return ingredientService.updateIngredient(id, ingredientDTO);
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public void deleteIngredient(@PathVariable Long id) {
     ingredientService.deleteIngredient(id);
   }

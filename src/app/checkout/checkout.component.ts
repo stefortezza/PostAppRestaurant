@@ -1,114 +1,91 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-
-declare var Stripe: any; // Dichiarazione per TypeScript
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { ICreateOrderRequest, IPayPalConfig, ITransactionItem, NgxPayPalModule } from 'ngx-paypal';
+import { OrderService } from '../service/order.service';
+import { CommonModule } from '@angular/common';  // Importa CommonModule qui
 
 @Component({
   selector: 'app-checkout',
+  standalone: true,  // Aggiungi standalone: true
+  imports: [CommonModule, FormsModule, NgxPayPalModule], // Aggiungi CommonModule e FormsModule qui
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss'],
+  styleUrls: ['./checkout.component.scss']
 })
-export class CheckoutComponent implements OnInit, AfterViewInit {
-  stripe: any;
-  handler: any = null;
-  $membership: Observable<any> | undefined;
-  order: any = {
-    items: [],
-    totalPrice: 0,
-    note: '',
-  };
+export class CheckoutComponent implements OnInit {
+  checkoutForm: FormGroup | undefined;
+  public payPalConfig?: IPayPalConfig;
+  showSuccess: boolean = false;
+  items: any[] = [];
+  total: number = 0;
 
-  deliveryMethod: string;
-  selectedPaymentMethod!: string;
-  deliveryAddress: any = {
-    address: '',
-    streetNumber: '',
-    city: '',
-  };
-
-  apiUrl = 'assets/db.json';
-  tableDetails: any;
-
-  @ViewChild('checkoutButton') checkoutButton!: ElementRef;
-
-  constructor(private http: HttpClient, private router: Router, private elementRef: ElementRef) {
-    this.deliveryMethod =
-      this.router.getCurrentNavigation()?.extras.state?.['deliveryMethod'] ||
-      'N/A';
-  }
+  constructor(private formBuilder: FormBuilder, private orderService: OrderService) {}
 
   ngOnInit(): void {
-    this.getOrder().subscribe((data) => {
-      this.order.items = data.items;
-      this.order.totalPrice = data.totalPrice;
-      this.loadStripe();
-    });
+    this.items = this.orderService.getItems() || [];
+    console.log(this.items);
+    this.initConfig();
+    this.calculateTotal();
   }
 
-  ngAfterViewInit(): void {
-    if (this.checkoutButton && this.checkoutButton.nativeElement) {
-      this.checkoutButton.nativeElement.addEventListener('click', this.pay.bind(this));
-    } else {
-      console.error('Element with ID "checkout-button" not found or undefined.');
-    }
+  private calculateTotal(): void {
+    this.total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
-  getOrder() {
-    return this.http.get<any>(`${this.apiUrl}/order`);
-  }
-
-  selectPaymentMethod(method: string) {
-    this.selectedPaymentMethod = method;
-    console.log('Metodo di pagamento selezionato:', method);
-  }
-
-  updateDeliveryAddress() {
-    this.deliveryMethod = `Consegna a domicilio - ${this.deliveryAddress.address}, ${this.deliveryAddress.streetNumber}, ${this.deliveryAddress.city}`;
-  }
-
-  pay(paymentForm: NgForm) {
-    const { amount, description } = paymentForm.value;
-
-    var stripe = Stripe('pk_live_51PQVYYRtQw0gA7BPOekeg9hUCr6yfHtiq4ZNta4wlDZegKHDV7aRhUjcS7j9RoxsBpDQsVy7QgCgWSRrnKDnUkys00WnNSG5bY', {
-      betas: ['checkout_beta_4']
-    });
-
-    stripe.redirectToCheckout({
-      items: [{ sku: 'sku_EouPQJ6eEYCU1q', quantity: 1 }],
-      successUrl: 'https://formhero.com/',
-      cancelUrl: 'https://formhero.com/',
-    })
-    .then(function (result: any) {
-      if (result.error) {
-        var displayError = document.getElementById('error-message');
-        if (displayError) {
-          displayError.textContent = result.error.message;
-        }
-      }
-    });
-  }
-
-  loadStripe() {
-    if (!window.document.getElementById('stripe-script')) {
-      var s = window.document.createElement("script");
-      s.id = "stripe-script";
-      s.type = "text/javascript";
-      s.src = "https://checkout.stripe.com/checkout.js";
-      s.onload = () => {
-        this.handler = (<any>window).StripeCheckout.configure({
-          key: 'pk_live_51PQVYYRtQw0gA7BPOekeg9hUCr6yfHtiq4ZNta4wlDZegKHDV7aRhUjcS7j9RoxsBpDQsVy7QgCgWSRrnKDnUkys00WnNSG5bY',
-          locale: 'auto',
-          token: function (token: any) {
-            console.log(token);
-            alert('Payment Success!!');
+  private initConfig(): void {
+    this.payPalConfig = {
+      currency: 'EUR',
+      clientId: 'ATF1Y-FYqsWus4uXeOJQPl_wti-VJ35EBGYc9QvhktPoRmY4f_W94xkbUesPm0bzcvjjCDVa4-vJbLCw',
+      createOrderOnClient: (data) => <ICreateOrderRequest>{
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: {
+              currency_code: 'EUR',
+              value: this.total.toFixed(2),
+              breakdown: {
+                item_total: {
+                  currency_code: 'EUR',
+                  value: this.total.toFixed(2)
+                }
+              }
+            },
+            items: this.items.map(x => <ITransactionItem><unknown>{
+              name: x.title, 
+              quantity: x.quantity.toString(),
+              category: 'DIGITAL_GOODS',
+              unit_amount: {
+                currency_code: 'EUR',
+                value: (x.price * x.quantity).toFixed(2)
+              },
+            })
           }
+        ]
+      },
+      advanced: {
+        commit: 'true'
+      },
+      style: {
+        label: 'paypal',
+        layout: 'vertical'
+      },
+      onApprove: (data, actions) => {
+        console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        actions.order.get().then((details: any) => {
+          console.log('onApprove - you can get full order details inside onApprove: ', details);
         });
-      };
-
-      window.document.body.appendChild(s);
-    }
+      },
+      onClientAuthorization: (data) => {
+        console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
+      },
+      onCancel: (data, actions) => {
+        console.log('OnCancel', data, actions);
+      },
+      onError: err => {
+        console.log('OnError', err);
+      },
+      onClick: (data, actions) => {
+        console.log('onClick', data, actions);
+      },
+    };
   }
 }
