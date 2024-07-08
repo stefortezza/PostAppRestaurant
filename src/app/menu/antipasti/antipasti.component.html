@@ -1,6 +1,6 @@
-<div class="container-fluid mt-2">
+<div class="container-fluid mx-5">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-7">
       <div *ngIf="antipasti.length > 0">
         <div *ngFor="let category of antipasti" class="col-10 mx-2">
           <div class="card-container">
@@ -18,7 +18,7 @@
                     </ng-container>
                   </p>
                   <div class="d-flex justify-content-end">
-                    <p class="pizza-price text-primary mt-2">€ {{ category.price }}</p>
+                    <p class="pizza-price mt-2">€ {{ category.price }},00</p>
                     <span class="aggiungi mx-2" (click)="openAddToOrderModal(category)">+</span>
                   </div>
                 </div>
@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 ilTuoOrdine">
       <div class="order-section">
         <h5><span class="material-symbols-outlined">order_approve</span> Il tuo ordine</h5>
         <ul>
@@ -37,7 +37,7 @@
               <i class="material-icons">edit</i>
             </button>
             <div *ngIf="item.editMode">
-              <h5>Ingredienti :</h5>
+              <h5>Ingredienti:</h5>
               <div *ngFor="let ingredient of item.ingredienti">
                 <label>
                   <input type="checkbox" [(ngModel)]="ingredient.selected" />
@@ -48,7 +48,7 @@
               <div *ngFor="let optionalIngredient of item.opzionali">
                 <label>
                   <input type="checkbox" [(ngModel)]="optionalIngredient.selected" />
-                  {{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }})
+                  {{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }},00)
                 </label>
               </div>
               <button mat-raised-button color="primary" (click)="saveIngredients(item)">Salva modifiche</button>
@@ -84,17 +84,17 @@
                 <ng-container *ngIf="hasSelectedOptionalIngredients(item)">
                   <p>Condimenti opzionali:
                     <ng-container *ngFor="let optionalIngredient of item.opzionali; let last = last">
-                      <span *ngIf="optionalIngredient.selected">{{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }})</span>
+                      <span *ngIf="optionalIngredient.selected">{{ optionalIngredient.name }} (€{{ optionalIngredient.priceOpzionale }},00)</span>
                       <span *ngIf="optionalIngredient.selected && !last">, </span>
                     </ng-container>
                   </p>
                 </ng-container>
-                <p class="pizza-price text-primary">€ {{ item.priceOpzionale }}</p>
+                <p class="pizza-price">€ {{ item.priceOpzionale }},00</p>
               </div>
             </div>
           </li>
         </ul>
-        <p class="text-center bg-danger"><strong>Totale ordine:</strong> € {{ totalOrderPrice }}</p>
+        <p class="total-order-price"><strong>Totale ordine:</strong> € {{ totalOrderPrice }},00</p>
         <button class="concludi-ordine-button" (click)="openConcludiOrdineModal()">Concludi l'ordine</button>
       </div>
     </div>

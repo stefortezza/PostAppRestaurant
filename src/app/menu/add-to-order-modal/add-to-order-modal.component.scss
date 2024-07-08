@@ -2,17 +2,50 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Background semi-trasparente */
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: hidden; /* Aggiunto per garantire che l'immagine non esca dai bordi arrotondati */
+}
+
+.modal-image {
+  width: 100%; /* L'immagine riempie tutta la larghezza del contenitore */
+  height: auto; 
+  display: block;
+  margin-bottom: 20px; /* Aggiunge margine sotto */
+  border-radius: 10px; /* Bordo arrotondato */
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: black; 
 }
 
 h3 {
-  margin-bottom: 20px;
-  text-align: center;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #333;
 }
 
 .ingredient-section,
 .optional-ingredient-section {
   width: 100%;
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .checkbox-container {
@@ -37,42 +70,50 @@ h3 {
   position: absolute;
   left: 0;
   top: 0;
-  width: 25px;
-  height: 25px;
-  border: 2px solid #d9534f; /* Red border color */
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d9534f; /* Colore rosso del bordo */
   border-radius: 5px;
-  background: #ffffff; /* White background color */
+  background: #ffffff; /* Colore di sfondo bianco */
 }
 
 .checkbox-container input[type="checkbox"]:checked + label:after {
   content: "";
   position: absolute;
-  left: 9px;
-  top: 9px;
+  left: 5px;
+  top: 5px;
   width: 10px;
   height: 10px;
-  background: #d9534f; /* Red background color */
+  background: #d9534f; /* Colore di sfondo rosso */
 }
 
 .modal-buttons {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  margin-top: 20px;
 }
 
 button {
-  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.my-dialog-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+button[mat-button] {
+  background-color: #d9534f;
+  color: white;
 }
 
-.modal-image {
-  max-height: 200px; /* Regola l'altezza massima secondo le tue necessità */
-  width: auto; /* Mantiene le proporzioni dell'immagine */
-  display: block;
-  margin: 0 auto; /* Centra l'immagine nella modale */
+button[mat-button]:hover {
+  background-color: darkred;
+}
+
+button[mat-button]:nth-child(2) {
+  background-color: grey;
+}
+
+button[mat-button]:nth-child(2):hover {
+  background-color: darkgrey;
 }

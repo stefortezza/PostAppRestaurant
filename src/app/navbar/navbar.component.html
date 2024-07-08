@@ -1,18 +1,45 @@
 <nav class="navbar">
   <div class="navbar-content">
-    <div class="logo">Logo</div>
+    <div class="img-fluid">
+      <a href="#">
+        <img
+          src="../../assets/img/logo.png"
+          class="navbar-logo"
+        />
+      </a>
+    </div>
     <div class="auth-links">
       <div class="register-forgot text-end mx-2" *ngIf="!user">
-        <a routerLink="/registrati" class="register-link fw-semibold mb-0 m-0">Registrazione</a>
+        <a routerLink="/registrati" class="register-link fw-semibold mb-0 m-0">
+          Registrazione
+        </a>
         <a href="#" class="forgot-password-link mt-0">Password dimenticata?</a>
       </div>
-      <input *ngIf="!user" type="email" placeholder="Email" class="email-input px-2" [(ngModel)]="email">
-      <input *ngIf="!user" type="password" placeholder="Password" class="password-input px-2" [(ngModel)]="password">
-      <button *ngIf="!user" class="login-button" (click)="login()">Login</button>
+      <input
+        *ngIf="!user"
+        type="email"
+        placeholder="Email"
+        class="email-input px-2"
+        [(ngModel)]="email"
+      />
+      <input
+        *ngIf="!user"
+        type="password"
+        placeholder="Password"
+        class="password-input px-2"
+        [(ngModel)]="password"
+      />
+      <button *ngIf="!user" class="login-button" (click)="login()">
+        Login
+      </button>
       <div *ngIf="user" class="welcome-text">
         Benvenuto {{ user.user.name }} {{ user.user.surname }}
-        <a routerLink="/create-category" class="btn btn-primary mx-2">Inserisci Categoria</a>
-        <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+        <a routerLink="/create-category" class="btn btn-primary mx-2">
+          Inserisci Prodotto
+        </a>
+        <button type="button" class="btn btn-danger" (click)="logout()">
+          Logout
+        </button>
       </div>
     </div>
   </div>

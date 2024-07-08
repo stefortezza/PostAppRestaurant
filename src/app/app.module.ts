@@ -21,7 +21,6 @@ import { AddToOrderModalComponent } from './menu/add-to-order-modal/add-to-order
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { ConcludiOrdineModalComponent } from './menu/concludi-ordine-modal/concludi-ordine-modal.component';
-import { CheckoutComponent } from './checkout/checkout.component';
 import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';

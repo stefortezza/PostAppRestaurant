@@ -1,35 +1,25 @@
-<div class="container-fluid mt-2">
+<div class="container-fluid mx-5">
   <div class="row">
-    <div class="col-8 mt-5">
+    <div class="col-8">
       <!-- Sezione Bottoni -->
       <div class="buttonMenu mb-4">
-        <button routerLink="/menu/antipasti" class="menu-button">
-          Antipasti
-        </button>
+        <button routerLink="/menu/antipasti" class="menu-button">Antipasti</button>
         <button routerLink="/menu/pizze" class="menu-button">Pizze</button>
-        <button routerLink="/menu/hamburger" class="menu-button">
-          Hamburger
-        </button>
+        <button routerLink="/menu/hamburger" class="menu-button">Hamburger</button>
         <button routerLink="/menu/bibite" class="menu-button">Bibite</button>
         <button routerLink="/menu/dolci" class="menu-button">Dolci</button>
-        <button routerLink="/menu/digestivi" class="menu-button">
-          Digestivi
-        </button>
+        <button routerLink="/menu/digestivi" class="menu-button">Digestivi</button>
       </div>
-      <div class="mb-2">
+      <!-- <div class="mb-2">
         <span class="material-symbols-outlined"> bookmark </span>
         <p>Menu</p>
-      </div>
+      </div> -->
       <!-- Cards -->
       <div *ngIf="!isCategorySelected" class="row">
         <div class="col-md-4 mb-4" *ngFor="let category of categories">
           <a [routerLink]="category.link" class="card-link">
             <div class="card">
-              <img
-                [src]="category.image"
-                class="card-img-top"
-                [alt]="category.title"
-              />
+              <img [src]="category.image" class="card-img-top" [alt]="category.title" />
               <div class="card-body">
                 <h5 class="card-title text-center">{{ category.title }}</h5>
               </div>
@@ -38,4 +28,5 @@
         </div>
       </div>
     </div>
-
+  </div>
+</div>

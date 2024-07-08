@@ -1,42 +1,42 @@
-<!-- INSEIRRE CHE SOLO L'ADMIN PUO` VEDERE IL PULSANTE AGGIUNGI CATEGR -->
-<div class="container mt-4">
-    <h2>Inserisci Prodotto</h2>
-    <form (ngSubmit)="createAntipasto()">
+<div class="container mt-4 mb-5">
+  <h2>Inserisci Prodotto</h2>
+  <form (ngSubmit)="createAntipasto()">
       <div class="mb-3">
-        <label for="title" class="form-label">Titolo</label>
-        <input type="text" id="title" class="form-control" [(ngModel)]="antipasti.title" name="title" required>
+          <label for="title" class="form-label">Titolo</label>
+          <input type="text" id="title" class="form-control" [(ngModel)]="antipasti.title" name="title" required>
       </div>
-      
+
       <div class="mb-3">
-        <label for="ingredienti" class="form-label">Ingredienti</label>
-        <div *ngFor="let ingrediente of antipasti.ingredienti; let i = index">
-          <input type="text" class="form-control mb-2" [(ngModel)]="antipasti.ingredienti[i].name" [name]="'ingredienti' + i" required>
-        </div>
-        <button type="button" class="btn btn-secondary mb-3" (click)="addIngrediente()">Aggiungi Ingrediente</button>
+          <label for="ingredienti" class="form-label">Ingredienti</label>
+          <br>
+          <div *ngFor="let ingrediente of antipasti.ingredienti; let i = index">
+              <input type="text" class="form-control mb-2" [(ngModel)]="antipasti.ingredienti[i].name" [name]="'ingredienti' + i" required>
+          </div>
+          <button type="button" class="btn btn-secondary mb-3" (click)="addIngrediente()">Aggiungi Ingrediente</button>
       </div>
-      
+
       <div class="mb-3">
-        <label for="opzionali" class="form-label">Opzionali</label>
-        <div *ngFor="let opzionale of antipasti.opzionali; let i = index">
-          <input type="text" class="form-control mb-2" [(ngModel)]="antipasti.opzionali[i].name" [name]="'opzionale' + i" required>
-          <input type="number" class="form-control mb-2" [(ngModel)]="antipasti.opzionali[i].priceOpzionale" [name]="'opzionalePrice' + i" required>
-        </div>
-        <button type="button" class="btn btn-secondary mb-3" (click)="addOpzionale()">Aggiungi Opzionale</button>
+          <label for="opzionali" class="form-label">Ingredienti Opzionali</label>
+          <br>
+          <div *ngFor="let opzionale of antipasti.opzionali; let i = index">
+              <input type="text" class="form-control mb-2" [(ngModel)]="antipasti.opzionali[i].name" [name]="'opzionale' + i" required>
+              <input type="number" class="form-control mb-2" [(ngModel)]="antipasti.opzionali[i].priceOpzionale" [name]="'opzionalePrice' + i" required>
+          </div>
+          <button type="button" class="btn btn-secondary mb-3" (click)="addOpzionale()">Aggiungi Opzionale</button>
       </div>
-      
+
       <div class="mb-3">
-        <label for="price" class="form-label">Prezzo</label>
-        <input type="number" id="price" class="form-control" [(ngModel)]="antipasti.price" name="price" required>
+          <label for="price" class="form-label">Prezzo</label>
+          <input type="number" id="price" class="form-control" [(ngModel)]="antipasti.price" name="price" required>
       </div>
-      
+
       <div class="mb-3">
-        <label for="image" class="form-label">Immagine</label>
-        <input type="text" id="image" class="form-control" [(ngModel)]="antipasti.image" name="image" required>
+          <label for="image" class="form-label">Immagine</label>
+          <input type="file" id="image" class="form-control" (change)="onFileChange($event)">
       </div>
-      
+
       <button type="submit" class="btn btn-primary">Inserisci Prodotto</button>
-      
+
       <p *ngIf="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
-    </form>
-  </div>
-  
+  </form>
+</div>

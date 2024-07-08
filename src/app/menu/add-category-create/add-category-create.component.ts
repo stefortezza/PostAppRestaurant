@@ -25,17 +25,30 @@ export class AddCategoryCreateComponent {
 
   errorMessage: string | undefined;
   currentOrderItem: any;
+  selectedFile: File | null = null;
 
   constructor(
     private dataService: DataService, 
     private router: Router
   ) {}
 
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
   createAntipasto(): void {
-    console.log('Antipasto da inviare:', this.antipasti); 
+    if (!this.selectedFile) {
+      this.errorMessage = 'Per favore, carica un\'immagine.';
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
   
     const userToken = localStorage.getItem('user')?.trim() || '';
-    console.log('Token recuperato:', userToken);
   
     if (!userToken) {
       console.error('Token non trovato nel localStorage.');
@@ -43,6 +56,31 @@ export class AddCategoryCreateComponent {
       return;
     }
   
+    this.dataService.uploadImage(formData).subscribe({
+      next: (response: any) => {
+        console.log('Immagine caricata:', response);
+  
+        this.antipasti.image = response;
+
+        this.submitAntipasto();
+      },
+      error: (error: any) => {
+        console.error('Errore durante il caricamento dell\'immagine:', error);
+        this.errorMessage = `Errore durante il caricamento dell\'immagine: ${error.message}`;
+      }
+    });
+  }
+
+  submitAntipasto(): void {
+    const userToken = localStorage.getItem('user')?.trim() || '';
+    console.log('Token recuperato:', userToken);
+
+    if (!userToken) {
+      console.error('Token non trovato nel localStorage.');
+      this.errorMessage = 'Token non trovato. Effettua nuovamente il login.';
+      return;
+    }
+
     this.dataService.postData('categories', this.antipasti).subscribe({
       next: (newAntipasto) => {
         console.log('Antipasto creato:', newAntipasto);
@@ -50,7 +88,7 @@ export class AddCategoryCreateComponent {
       },
       error: (error) => {
         console.error('Errore durante la creazione dell\'antipasto:', error);
-  
+
         if (error.status === 0) {
           this.errorMessage = 'Errore: impossibile connettersi al server.';
         } else if (error.status === 403) {
@@ -68,7 +106,7 @@ export class AddCategoryCreateComponent {
       selected: true,
       categoryId: this.antipasti.categoryId 
     };
-    
+
     this.dataService.postIngredient(newIngredient).subscribe({
       next: (ingredient) => {
         console.log('Ingrediente creato:', ingredient);
@@ -86,11 +124,10 @@ export class AddCategoryCreateComponent {
       name: '',
       selected: false,
       priceOpzionale: 0,
-      categoryId: this.antipasti.categoryId 
-      ,
+      categoryId: this.antipasti.categoryId,
       price: 0
     };
-    
+
     this.dataService.postOptionalIngredient(newOptionalIngredient).subscribe({
       next: (opzionale) => {
         console.log('Ingrediente opzionale creato:', opzionale);

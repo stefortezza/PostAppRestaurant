@@ -55,6 +55,13 @@ export class DataService implements HttpInterceptor {
     );
   }
 
+  uploadImage(formData: FormData): Observable<string> {
+    const url = `${this.apiUrl}/categories/upload`;
+    return this.httpClient.post<string>(url, formData, { responseType: 'text' as 'json' }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Unknown error occurred';
     if (error.error instanceof ErrorEvent) {

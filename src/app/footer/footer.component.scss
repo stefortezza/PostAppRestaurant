@@ -1,0 +1,57 @@
+.footer {
+  background: linear-gradient(to bottom, white, red);
+  color: black;
+  padding: 40px 0;
+  font-family: Arial, sans-serif;
+}
+
+.footer h5 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.footer ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer ul li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.footer ul li i.material-icons {
+  margin-right: 10px;
+  color: black;
+}
+
+.footer ul li a {
+  color: black;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer ul li a:hover {
+  color: #f8d7da;
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+}
+
+.social-links a i {
+  margin-right: 8px;
+  font-size: 20px;
+  color: black;
+}
+
+.footer .text-center {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: black;
+}

@@ -1,17 +1,23 @@
 package it.PostAppRestaurant.Controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import it.PostAppRestaurant.Dto.CategoryDTO;
 import it.PostAppRestaurant.Entity.Category;
 import it.PostAppRestaurant.Exceptions.BadRequestException;
 import it.PostAppRestaurant.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -19,6 +25,13 @@ public class CategoryController {
 
   @Autowired
   private CategoryService categoryService;
+
+  private final Cloudinary cloudinary;
+
+  @Autowired
+  public CategoryController(Cloudinary cloudinary) {
+    this.cloudinary = cloudinary;
+  }
 
   @PostMapping("/categories")
   @ResponseStatus(HttpStatus.CREATED)
@@ -30,6 +43,14 @@ public class CategoryController {
         .reduce("", (s, s2) -> s + s2));
     }
     return categoryService.saveCategory(categoryDTO);
+  }
+
+  @PostMapping("/categories/upload")
+  @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+    return uploadResult.get("url").toString();
   }
 
   @GetMapping("/categories")

@@ -24,4 +24,7 @@ public class UserDto {
   private String name;
   @NotBlank(message = "Surname can not be null or empty!")
   private String surname;
+
+  @Enumerated(EnumType.STRING)
+  private Role role = Role.USER;
 }

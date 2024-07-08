@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { ICreateOrderRequest, IPayPalConfig, ITransactionItem, NgxPayPalModule } from 'ngx-paypal';
 import { OrderService } from '../service/order.service';
-import { CommonModule } from '@angular/common';  // Importa CommonModule qui
+import { CommonModule } from '@angular/common';  
 
 @Component({
   selector: 'app-checkout',
-  standalone: true,  // Aggiungi standalone: true
-  imports: [CommonModule, FormsModule, NgxPayPalModule], // Aggiungi CommonModule e FormsModule qui
+  standalone: true,  
+  imports: [CommonModule, FormsModule, NgxPayPalModule], 
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+[x: string]: any;
   checkoutForm: FormGroup | undefined;
   public payPalConfig?: IPayPalConfig;
   showSuccess: boolean = false;

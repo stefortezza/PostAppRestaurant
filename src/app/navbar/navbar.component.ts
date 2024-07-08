@@ -12,12 +12,21 @@ export class NavbarComponent implements OnInit {
   email: string = '';
   password: string = '';
 
-  constructor(private authSrv: AuthService) {}
+  constructor(public authSrv: AuthService) {}
 
   ngOnInit(): void {
     this.authSrv.user$.subscribe((token) => {
       if (token) {
-        this.user = this.getUserDetailsFromToken(token);
+        this.user = {
+          accessToken: token,
+          user: {
+            id: '1',
+            name: '', 
+            surname: '', 
+            email: '',
+            role: 'ADMIN' 
+          }
+        };
       } else {
         this.user = null;
       }
@@ -28,7 +37,8 @@ export class NavbarComponent implements OnInit {
     if (this.email && this.password) {
       const userCredentials = { email: this.email, password: this.password };
       this.authSrv.login(userCredentials).subscribe({
-        next: () => {
+        next: (token) => {
+          // Il token verrà gestito automaticamente nel ngOnInit tramite l'observable user$
           this.email = '';
           this.password = '';
         },
@@ -42,17 +52,5 @@ export class NavbarComponent implements OnInit {
   logout(): void {
     this.authSrv.logout();
     this.user = null; 
-  }
-
-  private getUserDetailsFromToken(token: string): AuthData {
-    return {
-      accessToken: token,
-      user: {
-        id: '1', // Sostituisci con i dettagli effettivi dell'utente
-        name: '', // Sostituisci con i dettagli effettivi dell'utente
-        surname: '', // Sostituisci con i dettagli effettivi dell'utente
-        email: '' // Sostituisci con i dettagli effettivi dell'utente
-      }
-    };
   }
 }

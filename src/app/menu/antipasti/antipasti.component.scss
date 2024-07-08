@@ -1,50 +1,58 @@
-/* Stile per la card container */
-.card-container, .order-section {
-  border: 1px solid #ddd; /* Bordo grigio chiaro */
-  border-radius: 10px; /* Bordo arrotondato */
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Ombra leggera */
-  background-color: #fff; /* Sfondo bianco */
-  margin-bottom: 15px; /* Spazio tra le card */
-  padding: 15px; /* Padding interno per .order-section */
+/* Stile per i bottoni */
+.menu-button {
+  background-color: rgba(223, 223, 223, 0.646);
+  color: black;
+  font-weight: 500;
+  padding: 12px 20px; /* Aumentato il padding per pulsanti più grandi */
+  border: none;
+  border-radius: 10px;
+  margin: 7px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-/* Stile per l'immagine della pizza */
+.menu-button:hover {
+  background-color: red;
+  color: white;
+}
+
+.card-container {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-bottom: 15px;
+  padding: 15px;
+}
+
 .pizza-image {
   width: 100px;
   height: auto;
-  border-radius: 10px;
-}
-
-.card-title, .card-text, .pizza-price {
-  margin: 0; /* Rimuove il margine */
+  border-radius: 15px;
 }
 
 .card-title {
-  font-size: 18px; /* Riduzione del font size */
-  font-weight: 700;
+  font-size: 25px;
+  font-weight: 600;
 }
 
 .card-text {
-  font-size: 14px; /* Riduzione del font size */
+  font-size: 17px;
   font-weight: 500;
-  margin-top: 5px; /* Riduzione dello spazio tra titolo e descrizione */
+  margin-top: 15px;
 }
 
 .pizza-price {
-  font-size: 14px; /* Riduzione del font size */
-  color: blue;
+  font-size: 18px;
+  color: red; /* Colore del prezzo corretto */
   font-weight: 600;
-  margin-left: auto; /* Allinea il prezzo a destra */
-}
-
-.aggiungi, .quantity-button {
-  background-color: red;
-  color: white;
-  border: none;
-  cursor: pointer; /* Aggiunge il puntatore al passaggio del mouse */
+  margin-left: auto;
 }
 
 .aggiungi {
+  background-color: red;
+  color: white;
+  border: none;
   border-radius: 50%;
   font-size: 24px;
   width: 40px;
@@ -52,93 +60,151 @@
   text-align: center;
   line-height: 40px;
   margin-left: 10px;
+  cursor: pointer;
+}
+
+.aggiungi:hover {
+  background-color: darkred;
 }
 
 .quantity-button {
+  background-color: red;
+  color: white;
+  border: none;
   border-radius: 5px;
   width: 30px;
   height: 30px;
   font-size: 18px;
   margin-top: 5px;
+  cursor: pointer;
 }
 
 .quantity-button:hover {
-  background-color: red;
+  background-color: darkred;
 }
 
 .quantity-button:focus {
   outline: none;
 }
 
+/* Stile per la sezione "Il tuo ordine" */
+
+.ilTuoOrdine{
+  margin-left: 80px;
+}
+
+.order-section {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
 .order-section h5 {
   display: flex;
   align-items: center;
-  font-size: 20px; /* Dimensione del testo */
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: black;
 }
 
 .order-section .material-symbols-outlined {
-  margin-right: 8px; /* Spazio tra l'icona e il testo */
+  margin-right: 8px;
+  font-size: 24px;
 }
 
 .order-section ul {
-  list-style-type: none; /* Rimuovi i bullet points */
+  list-style-type: none;
   padding: 0;
-}
-
-.order-section li {
-  border-bottom: 1px solid #ddd; /* Bordo inferiore per ogni elemento */
-  padding: 10px 0; /* Padding per gli elementi */
-}
-
-.order-section li:last-child {
-  border-bottom: none; /* Rimuove il bordo inferiore all'ultimo elemento */
-}
-
-.order-item-controls, .quantity-controls {
-  display: flex;
-  align-items: center;
-}
-
-.quantity-controls {
-  flex-direction: column;
-  margin-right: 10px; /* Spazio tra i pulsanti e il titolo */
-}
-
-.quantity-count {
-  margin: 0 10px; /* Aggiungi spazio tra i bottoni */
-}
-
-.order-item-details {
-  width: calc(100% - 100px); /* Imposta la larghezza per lasciare spazio ai bottoni */
+  margin: 0;
 }
 
 .order-item {
   display: flex;
+  align-items: flex-start;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item-details {
+  flex-grow: 1;
+  padding-left: 15px;
+}
+
+.order-item-details p {
+  margin: 5px 0;
+}
+
+.pizza-price {
+  color: red;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.quantity-controls {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  margin-right: 10px;
+}
+
+.quantity-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+
+.quantity-button:hover {
+  background-color: darkred;
 }
 
 .edit-button {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .edit-button:hover {
-  color: #007bff; /* Cambia colore al passaggio del mouse */
+  color: #007bff;
 }
 
 .concludi-ordine-button {
-  background-color:red;
+  display: block;
+  width: 100%;
+  background-color: red;
   color: white;
-  border: 2px solid white;
-  padding: 10px 20px;
+  border: none;
+  padding: 15px;
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  display: block;
-  margin: 20px auto;
+  margin-top: 20px;
+  text-align: center;
 }
 
 .concludi-ordine-button:hover {
-  background-color: red;
+  background-color: darkred;
+}
+
+.total-order-price {
+  text-align: center;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  margin-top: 15px;
 }
